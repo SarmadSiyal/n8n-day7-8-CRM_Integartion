@@ -418,3 +418,11 @@ The system successfully automates:
 # Author
 
 Developed as part of the CRM Integration & Tracking Automation Task using n8n.
+
+---
+
+## 📌 Notes
+
+This project is part of the AI Automation Internship probation tasks (Day 4–5).
+
+Credentials are not included in this workflow. Please configure your own Google Sheets and Gmail credentials before running.
