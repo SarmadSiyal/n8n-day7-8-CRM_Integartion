@@ -1,0 +1,841 @@
+{
+  "name": "Lead Capture & CRM Entry System",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "770d616d-46eb-4919-b8ec-044ae52fa654",
+              "name": "name",
+              "value": "={{$json.body.name}}",
+              "type": "string"
+            },
+            {
+              "id": "f3e3abbb-7235-4768-9bbb-03465f82d4df",
+              "name": "email",
+              "value": "={{$json.body.email.toLowerCase()}}",
+              "type": "string"
+            },
+            {
+              "id": "c25b197a-0e0d-48c0-8752-fb7d5a9d0869",
+              "name": "phone",
+              "value": "={{ $json.body.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "f33259a6-57ca-4106-8e64-2e56dd8877db",
+              "name": "company",
+              "value": "={{ $json.body.company }}",
+              "type": "string"
+            },
+            {
+              "id": "90091421-d3e2-4cca-b9de-674e90593b97",
+              "name": "service",
+              "value": "={{ $json.body.service }}",
+              "type": "string"
+            },
+            {
+              "id": "788132f9-6eea-4bda-9e37-92a902ca2fb8",
+              "name": "budget",
+              "value": "={{ $json.body.budget }}",
+              "type": "string"
+            },
+            {
+              "id": "d5f52eff-f798-4a94-8220-031bc9d81fb2",
+              "name": "urgency",
+              "value": "={{ $json.body.urgency }}",
+              "type": "string"
+            },
+            {
+              "id": "6e40ee8b-a04d-41a1-8fcc-fdcb688e9d18",
+              "name": "source",
+              "value": "={{ $json.body.source }}",
+              "type": "string"
+            },
+            {
+              "id": "3c858328-b004-466b-acde-7d138eaf34df",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "35ba5e41-141b-4021-a462-0600daced1b3",
+              "name": "status",
+              "value": "New Lead",
+              "type": "string"
+            },
+            {
+              "id": "4953d7ba-c809-4d8a-986c-97ceced06688",
+              "name": "last_activity",
+              "value": "Lead Submitted",
+              "type": "string"
+            },
+            {
+              "id": "b4ad2964-d42a-46a6-b779-0184e6955b76",
+              "name": "created_at",
+              "value": "={{ DateTime.now().setZone('Asia/Karachi').toFormat('dd LLLL yyyy, hh:mm:ss a') }}",
+              "type": "string"
+            },
+            {
+              "id": "cb084f16-4f2b-411e-b088-92ebe7810a06",
+              "name": "last_updated",
+              "value": "={{ DateTime.now().setZone('Asia/Karachi').toFormat('dd LLLL yyyy, hh:mm:ss a') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        -16
+      ],
+      "id": "611d534c-b2af-40e2-bfc4-86c0599b8b53",
+      "name": "Format Lead Data"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Store New Lead in Database').item.json.Email }}",
+        "subject": "=We’ve Received Your Request",
+        "message": "=<!DOCTYPE html>\n\n<html>\n<body style=\"font-family: Arial, sans-serif; background:#f4f4f4; padding:30px;\">\n\n<div style=\"max-width:600px; margin:auto; background:white; padding:35px; border-radius:10px;\">\n\n<h2 style=\"color:#1f4037;\">Thank You for Contacting Us</h2>\n\n<p>Hi {{ $('Store New Lead in Database').item.json.Name }},</p>\n\n<p>\nWe have successfully received your request regarding \n<strong>{{ $('Store New Lead in Database').item.json.Service }}</strong>.\n</p>\n\n<p>\nOur team is currently reviewing your requirements and will contact you shortly with the next steps.\n</p>\n\n<div style=\"background:#f7f7f7; padding:15px; border-radius:8px; margin:20px 0;\">\n<p><strong>Lead ID:</strong> {{ $('Store New Lead in Database').item.json.Lead_ID }}</p>\n<p><strong>Requested Service:</strong> {{ $('Store New Lead in Database').item.json.Service }}</p>\n<p><strong>Submitted On:</strong> {{ $('Format Lead Data').item.json.created_at }}</p>\n</div>\n<p>\nWe appreciate your interest and look forward to working with you.\n</p>\n<p style=\"margin-top:30px;\">\nRegards,<br>\n<strong>AI Automation Team</strong>\n</p>\n\n</div>\n\n</body>\n</html>\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        128
+      ],
+      "id": "ed5956f5-07e3-45c8-86e4-ed1b8a980b7c",
+      "name": "Send Confirmation Email",
+      "webhookId": "fc4e33f5-05d0-4410-86c0-2fc63831a8ad",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g",
+          "mode": "list",
+          "cachedResultName": "Lead Management System",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "CRM_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{$node[\"Format Lead Data\"].json[\"email\"]}}"
+            },
+            {
+              "lookupColumn": "Service",
+              "lookupValue": "={{$node[\"Format Lead Data\"].json[\"service\"]}}"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": false
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -48,
+        -16
+      ],
+      "id": "d7d0e989-3bd2-403a-b824-87be634e4fd8",
+      "name": "Search Existing Lead",
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "retryOnFail": true,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "83d2cbf4-7b7c-4739-88d1-ed98cdac9319",
+              "leftValue": "={{$json}}",
+              "rightValue": 1,
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        144,
+        -16
+      ],
+      "id": "2881ccf3-92c4-4da3-b9a5-50a8c66891b1",
+      "name": "Check Duplicate Lead"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g",
+          "mode": "list",
+          "cachedResultName": "Lead Management System",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "CRM_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $json.Email }}",
+            "Last_Activity": "=Lead Re-Submitted",
+            "Last_Updated": "={{ DateTime.now().setZone('Asia/Karachi').toFormat('dd LLLL yyyy, hh:mm:ss a') }}",
+            "Message": "={{ $('Format Lead Data').item.json.message }}",
+            "Phone": "={{ $('Format Lead Data').item.json.phone }}",
+            "Budget": "={{ $('Format Lead Data').item.json.budget }}",
+            "Name": "={{ $('Format Lead Data').item.json.name }}",
+            "Company": "={{ $('Format Lead Data').item.json.company }}",
+            "Urgency": "={{ $('Format Lead Data').item.json.urgency }}",
+            "Source": "={{ $('Format Lead Data').item.json.source }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Lead_ID",
+              "displayName": "Lead_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service",
+              "displayName": "Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Urgency",
+              "displayName": "Urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Created At",
+              "displayName": "Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last_Activity",
+              "displayName": "Last_Activity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last_Updated",
+              "displayName": "Last_Updated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Next_Follow_Up",
+              "displayName": "Next_Follow_Up",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        384,
+        -144
+      ],
+      "id": "0efda127-fca6-45b2-8623-5c49abad4030",
+      "name": "Update Existing Lead",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        608,
+        -144
+      ],
+      "id": "df16e3c6-c7cf-4281-8fa4-e0f8d0ff457e",
+      "name": "Completes Form Submission"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        608,
+        128
+      ],
+      "id": "b6a690c2-3bde-47ba-8845-56ca088ffe5b",
+      "name": "Completes Form Submission1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-capture",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -464,
+        -16
+      ],
+      "id": "b0e81d54-bb84-475f-82ef-b2f870db8f1a",
+      "name": "Lead Capture Webhook",
+      "webhookId": "4362ed50-f340-4f9e-810c-8fabfa332327"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$node[\"Format Lead Data\"].json[\"email\"]}}",
+        "subject": "Your Request Has Been Updated",
+        "message": "=<!DOCTYPE html>\n\n<html>\n<body style=\"font-family: Arial, sans-serif; background:#f4f4f4; padding:30px;\">\n\n<div style=\"max-width:600px; margin:auto; background:white; padding:35px; border-radius:10px;\">\n\n<h2 style=\"color:#1f4037;\">Your Request Has Been Updated</h2>\n\n<p>Hi {{ $('Format Lead Data').item.json.name }},</p>\n\n<p>\nThank you for reaching out to us again regarding \n<strong>{{ $('Search Existing Lead').item.json.Service }}</strong>.\n</p>\n\n<p>\nWe’ve updated your existing request with the latest information you submitted.\n</p>\n\n<p>\nOur team will review the updated details and continue the follow-up process shortly.\n</p>\n\n<div style=\"background:#f7f7f7; padding:15px; border-radius:8px; margin:20px 0;\">\n<p><strong>Lead ID:</strong> {{$node[\"Search Existing Lead\"].json[\"Lead_ID\"]}}</p>\n<p><strong>Service:</strong> {{ $('Search Existing Lead').item.json.Service }}</p>\n<p><strong>Updated On:</strong> {{ new Date().toLocaleString(\"en-GB\", { timeZone: \"Asia/Karachi\", hour12: false }) }}</p>\n</div>\n<p style=\"margin-top:30px;\">\nRegards,<br>\n<strong>AI Automation Team</strong>\n</p>\n\n</div>\n\n</body>\n</html>\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        -144
+      ],
+      "id": "c91e6e83-0492-4d6a-ab42-00ad52659f36",
+      "name": "Send Re-Engagement Email",
+      "webhookId": "16fbd16e-4e9b-478a-944e-4334eff7814a",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0B2Y52A1U4",
+          "mode": "list",
+          "cachedResultName": "all-leads"
+        },
+        "text": "=🚀 New CRM Lead Received\n\n👤 Name: {{ $('Format Lead Data').item.json.name }}\n\n📧 Email: {{ $('Format Lead Data').item.json.email }}\n\n📞 Phone: {{ $('Format Lead Data').item.json.phone }}\n\n💼 Service: {{ $('Format Lead Data').item.json.service }}\n\n💰 Budget: {{ $('Format Lead Data').item.json.budget }}\n\n⚡ Urgency: {{ $('Format Lead Data').item.json.urgency }}\n\n🆔 Lead ID: {{$node[\"Store New Lead in Database\"].json[\"Lead_ID\"]}}\n\nReceieved At: {{ $('Format Lead Data').item.json.created_at }}\n\n\n📝 Message: {{ $('Format Lead Data').item.json.message }}\n",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1056,
+        128
+      ],
+      "id": "5f587719-9c84-4e8a-a8ec-a418850f629d",
+      "name": "Notify New Lead",
+      "webhookId": "d33f15a8-1ee4-4eac-9b8a-63b2d3f64d41",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0B2Y52A1U4",
+          "mode": "list",
+          "cachedResultName": "all-leads"
+        },
+        "text": "=🟡 Existing Lead Re-Engaged\n\nThe customer has updated/re-submitted an existing request.\n\nName: {{ $('Update Existing Lead').item.json.Name }}\n\nService: {{ $('Search Existing Lead').item.json.Service }}\n\nLead ID: {{$node[\"Search Existing Lead\"].json[\"Lead_ID\"]}}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1056,
+        -144
+      ],
+      "id": "74736202-0875-422d-ae2a-eb9a0ecd28ed",
+      "name": "Notify Re-Engaged Lead",
+      "webhookId": "f00dba4c-d044-4d49-ad3b-1f9fb0634cd9",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g",
+          "mode": "list",
+          "cachedResultName": "Lead Management System",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "CRM_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Format Lead Data').item.json.name }}",
+            "Email": "={{ $('Format Lead Data').item.json.email }}",
+            "Phone": "={{ $('Format Lead Data').item.json.phone }}",
+            "Company": "={{ $('Format Lead Data').item.json.company }}",
+            "Service": "={{ $('Format Lead Data').item.json.service }}",
+            "Budget": "={{ $('Format Lead Data').item.json.budget }}",
+            "Urgency": "={{ $('Format Lead Data').item.json.urgency }}",
+            "Source": "={{ $('Format Lead Data').item.json.source }}",
+            "Message": "={{ $('Format Lead Data').item.json.message }}",
+            "Lead_ID": "=LD-{{ Math.random().toString(36).substring(2,6).toUpperCase() }}",
+            "Status": "New Lead",
+            "Created At": "={{ $('Format Lead Data').item.json.created_at }}",
+            "Last_Activity": "=Lead Submitted",
+            "Last_Updated": "={{ $('Format Lead Data').item.json.last_updated }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Lead_ID",
+              "displayName": "Lead_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service",
+              "displayName": "Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Urgency",
+              "displayName": "Urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Created At",
+              "displayName": "Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Last_Activity",
+              "displayName": "Last_Activity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Last_Updated",
+              "displayName": "Last_Updated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Next_Follow_Up",
+              "displayName": "Next_Follow_Up",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        384,
+        128
+      ],
+      "id": "ed4740c8-10e7-4274-90a4-12cf09e9c76f",
+      "name": "Store New Lead in Database",
+      "credentials": {}
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Format Lead Data": {
+      "main": [
+        [
+          {
+            "node": "Search Existing Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Confirmation Email": {
+      "main": [
+        [
+          {
+            "node": "Notify New Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Existing Lead": {
+      "main": [
+        [
+          {
+            "node": "Check Duplicate Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Duplicate Lead": {
+      "main": [
+        [
+          {
+            "node": "Update Existing Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Store New Lead in Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Existing Lead": {
+      "main": [
+        [
+          {
+            "node": "Completes Form Submission",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Completes Form Submission": {
+      "main": [
+        [
+          {
+            "node": "Send Re-Engagement Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Completes Form Submission1": {
+      "main": [
+        [
+          {
+            "node": "Send Confirmation Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Capture Webhook": {
+      "main": [
+        [
+          {
+            "node": "Format Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Re-Engagement Email": {
+      "main": [
+        [
+          {
+            "node": "Notify Re-Engaged Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store New Lead in Database": {
+      "main": [
+        [
+          {
+            "node": "Completes Form Submission1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "33403f6a-51a3-404f-bbce-e136344b5091",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4afab8f9e286217cf61120568c8c214f2eecb2afad454e4186dea3fbb88841f8"
+  },
+  "id": "aeLTwi9fUA5J3zkk",
+  "tags": []
+}

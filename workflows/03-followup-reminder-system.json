@@ -1,0 +1,177 @@
+{
+  "name": "Automated Follow-Up Reminder System",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -192,
+        -16
+      ],
+      "id": "82cc366d-40f8-4d07-b377-7ea0c205412d",
+      "name": "Daily Follow-Up Check"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g",
+          "mode": "list",
+          "cachedResultName": "Lead Management System",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "CRM_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        16,
+        -16
+      ],
+      "id": "518334ab-3bb9-4387-bd86-80daa221be58",
+      "name": "Get CRM Leads",
+      "retryOnFail": true,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "286284a8-dbcb-4fa8-ab99-ec073e153f98",
+              "leftValue": "={{$json[\"Status\"]}}",
+              "rightValue": "Closed",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "2fa7b2bf-4acc-4cb9-9c0c-9d343ce83b08",
+              "leftValue": "={{\nnew Date($json[\"Next_Follow_Up\"]) < new Date()\n}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        -16
+      ],
+      "id": "2ebf99f1-ad35-47ae-8ff3-3f5d572e6528",
+      "name": "Check Active & Overdue Follow-Up Leads"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0B2Y52A1U4",
+          "mode": "list",
+          "cachedResultName": "all-leads"
+        },
+        "text": "=🚨 Overdue Follow-Up Alert\n\nLead ID: {{$json[\"Lead_ID\"]}}\n\nClient: {{$json[\"Name\"]}}\n\nService: {{$json[\"Service\"]}}\n\nCurrent Status:\n{{$json[\"Status\"]}}\n\nFollow-Up Date:\n{{$json[\"Next_Follow_Up\"]}}\n\nLast Activity:\n{{$json[\"Last_Activity\"]}}\n\n\nPlease contact this lead immediately.\n",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        480,
+        -32
+      ],
+      "id": "e312fd97-0460-4cc7-abe4-d8f0d6ed094f",
+      "name": "Send Follow-Up Reminder",
+      "webhookId": "284f00a2-f709-4e99-bfae-2792afe2cf8b",
+      "credentials": {
+        "slackApi": {
+          "id": "9HL7l9f1tMjzc4q6",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Daily Follow-Up Check": {
+      "main": [
+        [
+          {
+            "node": "Get CRM Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get CRM Leads": {
+      "main": [
+        [
+          {
+            "node": "Check Active & Overdue Follow-Up Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Active & Overdue Follow-Up Leads": {
+      "main": [
+        [
+          {
+            "node": "Send Follow-Up Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "92473791-698a-44fe-87a8-f8c31694a694",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4afab8f9e286217cf61120568c8c214f2eecb2afad454e4186dea3fbb88841f8"
+  },
+  "id": "pOk7WxH32j9p0xI9",
+  "tags": []
+}

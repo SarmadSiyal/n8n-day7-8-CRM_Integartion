@@ -1,0 +1,615 @@
+{
+  "name": "CRM Lead Management & Activity Tracking",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3820abde-1a2e-445d-b654-1d307642a61e",
+              "name": "lead_id",
+              "value": "={{$json.body.lead_id}}",
+              "type": "string"
+            },
+            {
+              "id": "8cf8cd39-4b51-4531-8482-90e9688c01e9",
+              "name": "status",
+              "value": "={{$json.body.status}}",
+              "type": "string"
+            },
+            {
+              "id": "44523787-4607-44ba-a4a1-5cc9bf32ba24",
+              "name": "activity_type",
+              "value": "={{ $json.body.activity }}",
+              "type": "string"
+            },
+            {
+              "id": "a6ca50cf-b554-41d4-be80-b10e3a03d111",
+              "name": "notes",
+              "value": "={{$json.body.notes}}",
+              "type": "string"
+            },
+            {
+              "id": "66661324-c3c1-46c4-b27f-6972299fac96",
+              "name": "follow_up_date",
+              "value": "={{ $json.body.next_followup }}",
+              "type": "string"
+            },
+            {
+              "id": "ffbe1aa5-195b-49b5-9556-809308e29bfc",
+              "name": "updated_at",
+              "value": "={{ DateTime.now().setZone('Asia/Karachi').toFormat('dd LLLL yyyy, hh:mm:ss a') }}",
+              "type": "string"
+            },
+            {
+              "id": "46a56bca-ee10-4106-81e7-117ea3cd9406",
+              "name": "activity_id",
+              "value": "=ACT-{{ Math.random().toString(36).substring(2,6).toUpperCase() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -256,
+        416
+      ],
+      "id": "3188341e-591c-49df-b9dc-6fd5595aeb96",
+      "name": "Format CRM Update Data"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g",
+          "mode": "list",
+          "cachedResultName": "Lead Management System",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "CRM_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Lead_ID",
+              "lookupValue": "={{$node[\"Format CRM Update Data\"].json[\"lead_id\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -48,
+        416
+      ],
+      "id": "250e668e-c787-4fa5-9638-871fb7d0c32d",
+      "name": "Find Lead by ID",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "crm-update",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -480,
+        416
+      ],
+      "id": "300a084b-7e47-4ebd-a860-1a5bb368e2e8",
+      "name": "CRM Update Webhook",
+      "webhookId": "44efc814-a87f-4b08-ae8e-a9961ffa84c7"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a008e4f3-394c-433d-aaae-1cda24cfb4d8",
+              "leftValue": "={{$json}}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        160,
+        416
+      ],
+      "id": "cc3f15f2-99c7-4807-9ee6-b02cf26307bc",
+      "name": "Check Lead Exists"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g",
+          "mode": "list",
+          "cachedResultName": "Lead Management System",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "CRM_Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Lead_ID": "={{$node[\"Format CRM Update Data\"].json[\"lead_id\"]}}",
+            "Status": "={{$node[\"Format CRM Update Data\"].json[\"status\"]}}",
+            "Last_Activity": "={{ $('Format CRM Update Data').item.json.activity_type }}",
+            "Next_Follow_Up": "={{ $('Format CRM Update Data').item.json.follow_up_date }}",
+            "Last_Updated": "={{$node[\"Format CRM Update Data\"].json[\"updated_at\"]}}"
+          },
+          "matchingColumns": [
+            "Lead_ID"
+          ],
+          "schema": [
+            {
+              "id": "Lead_ID",
+              "displayName": "Lead_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Service",
+              "displayName": "Service",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Urgency",
+              "displayName": "Urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Created At",
+              "displayName": "Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last_Activity",
+              "displayName": "Last_Activity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last_Updated",
+              "displayName": "Last_Updated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Next_Follow_Up",
+              "displayName": "Next_Follow_Up",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        384,
+        304
+      ],
+      "id": "b6d09008-23bd-4fa5-b4f2-f6145c54f8c4",
+      "name": "Update CRM Lead",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g",
+          "mode": "list",
+          "cachedResultName": "Lead Management System",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 703416725,
+          "mode": "list",
+          "cachedResultName": "Activity_Logs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/185DDUFzD-6XuWsx7rQ9IJkF_nbmkAnng1fPTXGkFc8g/edit#gid=703416725"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Activity_ID": "={{$node[\"Format CRM Update Data\"].json[\"activity_id\"]}}",
+            "Lead_ID": "={{$node[\"Format CRM Update Data\"].json[\"lead_id\"]}}",
+            "Activity_Type": "={{$node[\"Format CRM Update Data\"].json[\"activity_type\"]}}",
+            "Status_After_Update": "={{$node[\"Format CRM Update Data\"].json[\"status\"]}}",
+            "Notes": "={{$node[\"Format CRM Update Data\"].json[\"notes\"]}}",
+            "Follow_Up_Date": "={{$node[\"Format CRM Update Data\"].json[\"follow_up_date\"]}}",
+            "Activity_Time": "={{$node[\"Format CRM Update Data\"].json[\"updated_at\"]}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Activity_ID",
+              "displayName": "Activity_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lead_ID",
+              "displayName": "Lead_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Activity_Type",
+              "displayName": "Activity_Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status_After_Update",
+              "displayName": "Status_After_Update",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow_Up_Date",
+              "displayName": "Follow_Up_Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Activity_Time",
+              "displayName": "Activity_Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        624,
+        304
+      ],
+      "id": "f07ecfcb-8d78-4861-807b-c98e12e9a8b9",
+      "name": "Add Activity Log",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0B2Y52A1U4",
+          "mode": "list",
+          "cachedResultName": "all-leads"
+        },
+        "text": "=📌 CRM Lead Updated\n\nLead ID: {{$node[\"Format CRM Update Data\"].json[\"lead_id\"]}}\n\nStatus: {{$node[\"Format CRM Update Data\"].json[\"status\"]}}\n\nActivity: {{$node[\"Format CRM Update Data\"].json[\"activity_type\"]}}\n\nNext Follow-Up:\n{{$node[\"Format CRM Update Data\"].json[\"follow_up_date\"]}}\n\nNotes: {{ $('Format CRM Update Data').item.json.notes }}\n",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1040,
+        304
+      ],
+      "id": "1c7adeb9-8f7a-4e63-89d5-31e93df08a55",
+      "name": "Notify CRM Update",
+      "webhookId": "540712dc-548f-4060-9e80-340e0c6585ab",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Lead ID not found. Please enter a valid Lead ID.\"\n}",
+        "options": {
+          "responseCode": 404
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        368,
+        560
+      ],
+      "id": "ec1e4db5-4df8-4b78-a586-133273b5f392",
+      "name": "Respond Lead Not Found"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        832,
+        304
+      ],
+      "id": "edd0b11b-2fa0-450d-a039-75bd9e4717ef",
+      "name": "Respond Success",
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Format CRM Update Data": {
+      "main": [
+        [
+          {
+            "node": "Find Lead by ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Lead by ID": {
+      "main": [
+        [
+          {
+            "node": "Check Lead Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRM Update Webhook": {
+      "main": [
+        [
+          {
+            "node": "Format CRM Update Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Lead Exists": {
+      "main": [
+        [
+          {
+            "node": "Update CRM Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Lead Not Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update CRM Lead": {
+      "main": [
+        [
+          {
+            "node": "Add Activity Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Activity Log": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond Success": {
+      "main": [
+        [
+          {
+            "node": "Notify CRM Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "f938254d-bafe-4792-b066-27dbf13fd70a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4afab8f9e286217cf61120568c8c214f2eecb2afad454e4186dea3fbb88841f8"
+  },
+  "id": "x0p2wxBZLFmMgOp9",
+  "tags": []
+}
