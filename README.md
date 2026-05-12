@@ -67,7 +67,7 @@ This project was built as part of the **Day 7–8 CRM Integration & Tracking Aut
 # Repository Structure
 
 ```bash
-crm-automation-system/
+n8n-day7-8-CRM_Integartion/
 │
 ├── workflows/
 │   ├── 01-lead-capture-duplicate-management.json
