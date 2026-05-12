@@ -88,9 +88,6 @@ crm-automation-system/
 │   ├── lead-capture-form.html
 │   └── admin-crm-update-form.html
 │
-├── documentation/
-│   └── premium-crm-automation-documentation.md
-│
 ├── README.md
 │
 └── .gitignore
