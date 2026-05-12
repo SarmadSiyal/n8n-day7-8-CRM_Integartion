@@ -425,4 +425,4 @@ Developed as part of the CRM Integration & Tracking Automation Task using n8n.
 
 This project is part of the AI Automation Internship probation tasks (Day 7–8).
 
-Credentials are not included in this workflow. Please configure your own Google Sheets and Gmail credentials before running.
+Credentials are not included in the json files. Please configure your own Google Sheets, Gmail & Slack credentials before running.
