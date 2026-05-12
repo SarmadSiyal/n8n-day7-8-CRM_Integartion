@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Automation Consultation — Request Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-deep: #0d2b1f;
+    --green-mid: #1f4037;
+    --green-vivid: #22c76e;
+    --green-glow: #99f2c8;
+    --cream: #f8faf7;
+    --white: #ffffff;
+    --text-primary: #0d1a11;
+    --text-secondary: #4a6b58;
+    --text-muted: #8aab95;
+    --border: #d4e8db;
+    --border-focus: #22c76e;
+    --error: #e5534b;
+    --input-bg: #f2f8f4;
+    --shadow-card: 0 32px 80px rgba(13, 43, 31, 0.18), 0 2px 8px rgba(13, 43, 31, 0.08);
+    --radius: 10px;
+    --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--green-deep);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Animated background mesh */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 15% 20%, rgba(34, 199, 110, 0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 85% 80%, rgba(153, 242, 200, 0.08) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(31, 64, 55, 0.6) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Floating grid lines */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(34, 199, 110, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34, 199, 110, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 640px;
+  }
+
+  /* Header badge */
+  .brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(34, 199, 110, 0.12);
+    border: 1px solid rgba(34, 199, 110, 0.25);
+    border-radius: 100px;
+    padding: 6px 14px;
+    margin-bottom: 24px;
+    color: var(--green-vivid);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .brand-badge::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green-vivid);
+    box-shadow: 0 0 8px var(--green-vivid);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .page-title {
+    color: var(--white);
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .page-subtitle {
+    color: rgba(153, 242, 200, 0.65);
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  /* Card */
+  .card {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, var(--green-mid) 0%, #133528 100%);
+    padding: 28px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-header-left h2 {
+    color: var(--white);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .card-header-left p {
+    color: rgba(153, 242, 200, 0.7);
+    font-size: 12.5px;
+    margin-top: 3px;
+  }
+
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    transition: var(--transition);
+  }
+
+  .step-dot.active { background: var(--green-vivid); box-shadow: 0 0 8px var(--green-vivid); }
+
+  .card-body {
+    padding: 36px;
+  }
+
+  /* Section dividers */
+  .section-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Row */
+  .row { display: flex; gap: 16px; }
+  .row .field { flex: 1; }
+
+  /* Field */
+  .field {
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 7px;
+    letter-spacing: -0.01em;
+  }
+
+  label .req {
+    color: var(--green-vivid);
+    margin-left: 2px;
+  }
+
+  label .opt {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 11px;
+    margin-left: 4px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    background: var(--input-bg);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    color: var(--text-primary);
+    outline: none;
+    transition: var(--transition);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  input:hover, select:hover, textarea:hover {
+    border-color: #b0d4bf;
+    background: #edf6f1;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--border-focus);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(34, 199, 110, 0.1);
+  }
+
+  input.error, select.error, textarea.error {
+    border-color: var(--error);
+    background: #fff5f5;
+    box-shadow: 0 0 0 4px rgba(229, 83, 75, 0.08);
+  }
+
+  .field-error {
+    font-size: 12px;
+    color: var(--error);
+    margin-top: 5px;
+    display: none;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .field-error.show { display: flex; }
+
+  /* Select arrow */
+  .select-wrap {
+    position: relative;
+  }
+
+  .select-wrap::after {
+    content: '';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--text-muted);
+    pointer-events: none;
+    transition: var(--transition);
+  }
+
+  .select-wrap select { padding-right: 36px; cursor: pointer; }
+
+  /* Textarea */
+  textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
+
+  /* Character count */
+  .char-count {
+    text-align: right;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 4px;
+  }
+
+  /* Submit button */
+  .btn-submit {
+    width: 100%;
+    padding: 15px 24px;
+    background: linear-gradient(135deg, #22c76e 0%, #17a858 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: -0.01em;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .btn-submit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+    opacity: 0;
+    transition: var(--transition);
+  }
+
+  .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(34, 199, 110, 0.35); }
+  .btn-submit:hover::before { opacity: 1; }
+  .btn-submit:active { transform: translateY(0); }
+  .btn-submit:disabled { background: linear-gradient(135deg, #9bbfac, #7da899); cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .btn-submit .spinner {
+    width: 18px; height: 18px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .btn-submit.loading .spinner { display: block; }
+  .btn-submit.loading .btn-text { opacity: 0.7; }
+
+  .footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .footer-note svg { flex-shrink: 0; }
+
+  /* Success screen */
+  .success-screen {
+    display: none;
+    padding: 60px 36px;
+    text-align: center;
+  }
+
+  .success-screen.active { display: block; }
+
+  .success-icon {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #22c76e, #17a858);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    box-shadow: 0 12px 32px rgba(34, 199, 110, 0.3);
+    animation: popIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .success-icon svg { width: 34px; height: 34px; }
+
+  .success-screen h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+
+  .success-screen p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: 360px;
+    margin: 0 auto 28px;
+  }
+
+  .btn-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: var(--green-mid);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .btn-reset:hover { background: var(--green-deep); transform: translateY(-1px); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Sora', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateX(120%);
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    max-width: 340px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+
+  .toast.show { opacity: 1; transform: translateX(0); }
+  .toast.success { background: #17a858; }
+  .toast.error { background: #e5534b; }
+
+  /* Responsive */
+  @media (max-width: 520px) {
+    .card-body { padding: 24px 20px; }
+    .card-header { padding: 22px 20px; }
+    .row { flex-direction: column; gap: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+  <div class="brand-badge">AI Automation Services</div>
+  <h1 class="page-title">Let's Build Something<br>Intelligent Together</h1>
+  <p class="page-subtitle">Fill out the form below and our team will reach out within 24 hours.</p>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-left">
+        <h2>Consultation Request</h2>
+        <p>All fields marked * are required</p>
+      </div>
+      <div class="step-indicator">
+        <div class="step-dot active"></div>
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <form id="leadForm" novalidate>
+
+        <div class="section-label">Personal Info</div>
+
+        <div class="row">
+          <div class="field">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" name="name" id="name" placeholder="e.g. Sarmad Siyal" autocomplete="name" required>
+            <div class="field-error" id="err-name">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="currentColor"/><path d="M6 3.5v3M6 8.5v.5" stroke="currentColor" stroke-linecap="round"/></svg>
+              Please enter your full name
+            </div>
+          </div>
+          <div class="field">
+            <label>Email Address <span class="req">*</span></label>
+            <input type="email" name="email" id="email" placeholder="you@example.com" autocomplete="email" required>
+            <div class="field-error" id="err-email">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="currentColor"/><path d="M6 3.5v3M6 8.5v.5" stroke="currentColor" stroke-linecap="round"/></svg>
+              Enter a valid email address
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Phone <span class="opt">(optional)</span></label>
+            <input type="tel" name="phone" id="phone" placeholder="03001234567" autocomplete="tel" pattern="[0-9]{10,15}">
+            <div class="field-error" id="err-phone">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="currentColor"/><path d="M6 3.5v3M6 8.5v.5" stroke="currentColor" stroke-linecap="round"/></svg>
+              Enter a valid phone number (10–15 digits)
+            </div>
+          </div>
+          <div class="field">
+            <label>Company <span class="opt">(optional)</span></label>
+            <input type="text" name="company" placeholder="Your company name" autocomplete="organization">
+          </div>
+        </div>
+
+        <div class="section-label">Project Details</div>
+
+        <div class="field">
+          <label>Service Interested In <span class="req">*</span></label>
+          <div class="select-wrap">
+            <select name="service" id="service" required>
+              <option value="">Select a service…</option>
+              <option value="AI Automation">AI Automation</option>
+              <option value="CRM Implementation">CRM Implementation</option>
+              <option value="API Integration">API Integration</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-service">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="currentColor"/><path d="M6 3.5v3M6 8.5v.5" stroke="currentColor" stroke-linecap="round"/></svg>
+            Please select a service
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Budget Range <span class="req">*</span></label>
+            <div class="select-wrap">
+              <select name="budget" id="budget" required>
+                <option value="">Select budget…</option>
+                <option value="Less than $500">Less than $500</option>
+                <option value="$500 - $2000">$500 – $2,000</option>
+                <option value="$2000+">$2,000+</option>
+              </select>
+            </div>
+            <div class="field-error" id="err-budget">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="currentColor"/><path d="M6 3.5v3M6 8.5v.5" stroke="currentColor" stroke-linecap="round"/></svg>
+              Please select a budget range
+            </div>
+          </div>
+          <div class="field">
+            <label>Urgency <span class="req">*</span></label>
+            <div class="select-wrap">
+              <select name="urgency" id="urgency" required>
+                <option value="">Select urgency…</option>
+                <option value="Immediately">Immediately</option>
+                <option value="Within 1 Month">Within 1 Month</option>
+                <option value="Exploring">Just Exploring</option>
+              </select>
+            </div>
+            <div class="field-error" id="err-urgency">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="currentColor"/><path d="M6 3.5v3M6 8.5v.5" stroke="currentColor" stroke-linecap="round"/></svg>
+              Please select urgency
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>How did you hear about us? <span class="req">*</span></label>
+          <div class="select-wrap">
+            <select name="source" id="source" required>
+              <option value="">Select source…</option>
+              <option value="Facebook">Facebook</option>
+              <option value="Instagram">Instagram</option>
+              <option value="Website">Website</option>
+              <option value="Referral">Referral</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field-error" id="err-source">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="currentColor"/><path d="M6 3.5v3M6 8.5v.5" stroke="currentColor" stroke-linecap="round"/></svg>
+            Please select how you found us
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Project Details <span class="req">*</span></label>
+          <textarea name="message" id="message" placeholder="Describe your project, goals, or requirements in detail…" maxlength="1000" required></textarea>
+          <div class="char-count"><span id="charCount">0</span> / 1000</div>
+          <div class="field-error" id="err-message">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="currentColor"/><path d="M6 3.5v3M6 8.5v.5" stroke="currentColor" stroke-linecap="round"/></svg>
+            Please describe your project (min. 20 characters)
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span class="btn-text">Submit Consultation Request</span>
+          <div class="spinner"></div>
+        </button>
+
+        <p class="footer-note">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5a5 5 0 100 10 5 5 0 000-10zM6.5 4v3.5l2 1" stroke="#8aab95" stroke-width="1.2" stroke-linecap="round"/></svg>
+          We typically respond within 24 business hours
+        </p>
+
+      </form>
+
+      <!-- Success Screen -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-icon">
+          <svg viewBox="0 0 34 34" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 17l7 7L27 10"/>
+          </svg>
+        </div>
+        <h2>Request Submitted!</h2>
+        <p>Thank you! Your consultation request has been received. Our team will review your details and be in touch within 24 hours.</p>
+        <button class="btn-reset" onclick="resetForm()">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 7.5A5.5 5.5 0 1 0 7.5 2"/><path d="M2 3.5v4H6"/></svg>
+          Submit Another Response
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" role="alert" aria-live="polite"></div>
+
+<script>
+  const form = document.getElementById("leadForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const toast = document.getElementById("toast");
+  const successScreen = document.getElementById("successScreen");
+  const msgField = document.getElementById("message");
+  const charCount = document.getElementById("charCount");
+
+  // Character counter
+  msgField.addEventListener("input", () => {
+    charCount.textContent = msgField.value.length;
+  });
+
+  // Toast
+  let toastTimer;
+  function showToast(msg, type) {
+    clearTimeout(toastTimer);
+    toast.textContent = msg;
+    toast.className = "toast " + type + " show";
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 6000);
+  }
+
+  // Validation helpers
+  const rules = {
+    name:    v => v.trim().length >= 2,
+    email:   v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.toLowerCase()),
+    phone:   v => v === "" || /^[0-9]{10,15}$/.test(v.replace(/\s/g, "")),
+    service: v => v !== "",
+    budget:  v => v !== "",
+    urgency: v => v !== "",
+    source:  v => v !== "",
+    message: v => v.trim().length >= 20,
+  };
+
+  function validateField(id) {
+    const el = document.getElementById(id);
+    if (!el) return true;
+    const valid = rules[id] ? rules[id](el.value) : true;
+    const errEl = document.getElementById("err-" + id);
+    el.classList.toggle("error", !valid);
+    if (errEl) errEl.classList.toggle("show", !valid);
+    return valid;
+  }
+
+  // Blur validation
+  ["name", "email", "phone", "service", "budget", "urgency", "source", "message"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("blur", () => validateField(id));
+  });
+
+  // Reset
+  function resetForm() {
+    successScreen.classList.remove("active");
+    form.style.display = "";
+    form.reset();
+    charCount.textContent = "0";
+    document.querySelectorAll(".error").forEach(el => el.classList.remove("error"));
+    document.querySelectorAll(".field-error.show").forEach(el => el.classList.remove("show"));
+  }
+
+  // Submit
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    // Validate all
+    const fields = ["name", "email", "phone", "service", "budget", "urgency", "source", "message"];
+    const allValid = fields.map(validateField).every(Boolean);
+    if (!allValid) {
+      showToast("Please fix the highlighted fields before submitting.", "error");
+      // Scroll to first error
+      const firstErr = form.querySelector(".error");
+      if (firstErr) firstErr.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    submitBtn.classList.add("loading");
+    submitBtn.disabled = true;
+
+    const formData = new FormData(form);
+    formData.set("email", formData.get("email").toLowerCase().trim());
+
+    try {
+      const response = await fetch("https://nontransferential-normand-subtranslucent.ngrok-free.dev/webhook-test/lead-capture", {
+        method: "POST",
+        body: formData
+      });
+
+      if (response.ok) {
+        form.style.display = "none";
+        successScreen.classList.add("active");
+      } else {
+        showToast("Submission failed. Please try again.", "error");
+      }
+    } catch {
+      showToast("Network error. Please check your connection and try again.", "error");
+    }
+
+    submitBtn.classList.remove("loading");
+    submitBtn.disabled = false;
+  });
+</script>
+</body>
+</html>
