@@ -276,13 +276,13 @@ Lead IDs are generated only for completely new leads.
 ## Format
 
 ```javascript
-CRM-{{ Math.random().toString(36).substring(2,8).toUpperCase() }}
+CRM-{{ Math.random().toString(36).substring(2,6).toUpperCase() }}
 ```
 
 ## Example
 
 ```text
-CRM-A7F2K9
+CRM-A7F2
 ```
 
 ---
@@ -292,13 +292,13 @@ CRM-A7F2K9
 ## Format
 
 ```javascript
-ACT-{{ Math.random().toString(36).substring(2,8).toUpperCase() }}
+ACT-{{ Math.random().toString(36).substring(2,).toUpperCase() }}
 ```
 
 ## Example
 
 ```text
-ACT-K2P8XQ
+ACT-K2P8
 ```
 
 ---
